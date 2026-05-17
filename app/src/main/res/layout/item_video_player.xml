@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/window_border_background"
+    android:layout_marginBottom="4dp">
+
+    <!-- 标题栏 -->
+    <LinearLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/header_background"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp">
+
+        <TextView
+            android:id="@+id/tvVideoTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="视频标题"
+            android:textSize="13sp"
+            android:textColor="@color/player_text"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+        <ImageButton
+            android:id="@+id/btnSubtitle"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_subtitle"
+            android:background="@drawable/button_transparent_background"
+            android:scaleType="centerInside"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="字幕" />
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_close"
+            android:background="@drawable/button_transparent_background"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/close" />
+
+    </LinearLayout>
+
+    <!-- 视频播放区域 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/video_background" />
+
+        <!-- 滑动进度提示 -->
+        <TextView
+            android:id="@+id/tvSeekIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#AA000000"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="#FFFFFFFF"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <!-- 控制栏 -->
+    <LinearLayout
+        android:id="@+id/controlBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/footer_background"
+        android:padding="4dp">
+
+        <!-- 进度条 -->
+        <SeekBar
+            android:id="@+id/seekBarProgress"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:background="@drawable/seekbar_track_background"
+            android:thumbTint="@color/player_seekbar_thumb" />
+
+        <!-- 控制按钮行 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/btnPlayPause"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_play"
+                android:background="@drawable/button_transparent_background"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/play" />
+
+            <ToggleButton
+                android:id="@+id/btnLoop"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:textOn=""
+                android:textOff=""
+                android:checked="false"
+                android:layout_marginStart="8dp"
+                android:button="@drawable/ic_loop_selector" />
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="00:00 / 00:00"
+                android:textSize="12sp"
+                android:textColor="@color/player_text_secondary"
+                android:gravity="center" />
+
+            <ImageButton
+                android:id="@+id/btnFullscreen"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_fullscreen"
+                android:background="@drawable/button_transparent_background"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/fullscreen" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

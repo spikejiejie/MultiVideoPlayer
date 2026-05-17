@@ -1,0 +1,258 @@
+[
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_container_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\container_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_rotate.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_rotate.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-xxxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-xxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-xhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_button_transparent_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\button_transparent_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_seekbar_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\seekbar_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\layout_item_video_player.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\layout\\item_video_player.xml"
+    },
+    {
+        "merged": "com.multivideo.player.app-merged_res-39:/drawable_ic_forward.xml.flat",
+        "source": "com.multivideo.player.app-main-41:/drawable/ic_forward.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_toolbar_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\toolbar_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_screen_rotate.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_screen_rotate.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_icon_button_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\icon_button_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_window_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\window_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_add.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_add.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_player_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\player_background.xml"
+    },
+    {
+        "merged": "com.multivideo.player.app-merged_res-39:/drawable_ic_brightness.xml.flat",
+        "source": "com.multivideo.player.app-main-41:/drawable/ic_brightness.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_loop.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_loop.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_footer_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\footer_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_subtitle.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_subtitle.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_empty_state.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_empty_state.xml"
+    },
+    {
+        "merged": "com.multivideo.player.app-merged_res-39:/drawable_ic_rewind.xml.flat",
+        "source": "com.multivideo.player.app-main-41:/drawable/ic_rewind.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_control_bar_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\control_bar_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_button_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\button_background.xml"
+    },
+    {
+        "merged": "com.multivideo.player.app-merged_res-39:/drawable_ic_volume_up.xml.flat",
+        "source": "com.multivideo.player.app-main-41:/drawable/ic_volume_up.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_loop_selector.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_loop_selector.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_control_button_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\control_button_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_volume.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_volume.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_main_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\main_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-hdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_pause.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_pause.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-xxxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_video_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\video_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_seekbar_track_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\seekbar_track_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\layout_floating_window_player.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\layout\\floating_window_player.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_orientation_switch.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_orientation_switch.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_expand_more.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_expand_more.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_progress_bar_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\progress_bar_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-mdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_fullscreen.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_fullscreen.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_video.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_video.xml"
+    },
+    {
+        "merged": "com.multivideo.player.app-merged_res-39:/layout_activity_fullscreen_player.xml.flat",
+        "source": "com.multivideo.player.app-main-41:/layout/activity_fullscreen_player.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_switch_orientation.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_switch_orientation.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_title_bar_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\title_bar_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_video_player_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\video_player_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\xml\\backup_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_window_container_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\window_container_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_window_background_rounded.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\window_background_rounded.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_landscape.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_landscape.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_seekbar_progress.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\seekbar_progress.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_window_border_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\window_border_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_expand_less.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_expand_less.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_play.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_play.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_delete_all.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_delete_all.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_header_background.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\header_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_close.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_close.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-merged_res-39:\\drawable_ic_mute.xml.flat",
+        "source": "C:\\Users\\Administrator\\.gradle\\daemon\\8.0\\com.multivideo.player.app-main-41:\\drawable\\ic_mute.xml"
+    }
+]

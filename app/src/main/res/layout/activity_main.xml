@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/player_background"
+    tools:context=".MainActivity">
+
+    <!-- 顶部工具栏 -->
+    <LinearLayout
+        android:id="@+id/topToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/toolbar_background">
+
+        <!-- 第一行：标题和折叠按钮 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/app_name"
+                android:textSize="16sp"
+                android:textColor="@color/player_text"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btnToggleToolbar"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_expand_more"
+                android:background="@drawable/button_transparent_background"
+                android:scaleType="centerInside"
+                android:contentDescription="展开/折叠" />
+
+        </LinearLayout>
+
+        <!-- 第二行：操作按钮（可折叠） -->
+        <LinearLayout
+            android:id="@+id/toolbarActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="12dp"
+            android:visibility="gone">
+
+            <!-- 模式切换 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <Button
+                    android:id="@+id/btnModeInApp"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:text="应用内播放"
+                    android:textSize="11sp"
+                    android:backgroundTint="#FF2196F3"
+                    android:layout_marginEnd="4dp" />
+
+                <Button
+                    android:id="@+id/btnModeFloat"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:text="悬浮窗播放"
+                    android:textSize="11sp"
+                    android:backgroundTint="#FF9C27B0"
+                    android:layout_marginStart="4dp" />
+
+            </LinearLayout>
+
+            <!-- 添加和关闭 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCloseAll"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:text="@string/close_all"
+                    android:textSize="11sp"
+                    android:backgroundTint="#FF5555"
+                    android:layout_marginEnd="4dp" />
+
+                <Button
+                    android:id="@+id/btnAddVideo"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:text="@string/add_video"
+                    android:textSize="11sp"
+                    android:backgroundTint="@color/player_accent"
+                    android:layout_marginStart="4dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 应用内播放容器 -->
+    <FrameLayout
+        android:id="@+id/inAppContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <!-- 空状态提示 -->
+        <LinearLayout
+            android:id="@+id/emptyStateLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_empty_state"
+                android:contentDescription="空状态" />
+
+            <TextView
+                android:id="@+id/tvEmptyState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="点击菜单添加视频"
+                android:textSize="14sp"
+                android:textColor="@color/player_text_secondary" />
+
+        </LinearLayout>
+
+        <!-- 视频列表 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewVideos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            android:clipToPadding="false" />
+
+    </FrameLayout>
+
+    <!-- 悬浮窗播放容器 -->
+    <FrameLayout
+        android:id="@+id/floatContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="悬浮窗模式已开启"
+                android:textSize="16sp"
+                android:textColor="@color/player_text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="点击菜单添加视频"
+                android:textSize="12sp"
+                android:textColor="@color/player_text_secondary" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
