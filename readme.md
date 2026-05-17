@@ -90,7 +90,7 @@ app/src/main/java/com/multivideo/player/
 
 1. 克隆项目
 ```bash
-git clone https://github.com/yourusername/multivideo.git
+git clone https://github.com/spikejiejie/multivideo.git
 ```
 
 2. 用 Android Studio 打开项目
