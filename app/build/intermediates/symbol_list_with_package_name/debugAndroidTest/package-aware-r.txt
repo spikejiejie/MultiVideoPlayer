@@ -1,3 +1,0 @@
-com.multivideo.player.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme
