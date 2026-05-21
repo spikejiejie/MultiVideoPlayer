@@ -72,6 +72,11 @@ class FloatingWindowManager(
         windowManager.addView(view, floatingWindow.layoutParams)
         playerWrapper.initialize()
         
+        // 自动加载字幕
+        if (videoItem.subtitleUri != null) {
+            playerWrapper.loadSubtitle(videoItem.subtitleUri!!)
+        }
+        
         rearrangeAllWindows()
         
         return floatingWindow

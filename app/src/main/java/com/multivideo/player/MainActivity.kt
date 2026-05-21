@@ -47,14 +47,31 @@ class MainActivity : AppCompatActivity() {
     private var isFloatingMode = false
     private var isToolbarExpanded = false
     private var currentSubtitleWindowId: String? = null
+    private var isReceiverRegistered = false
     
     private val videoPickerLauncher = registerForActivityResult(
         ActivityResultContracts.OpenMultipleDocuments()
     ) { uris: List<Uri> ->
         if (uris.isNotEmpty()) {
+            // 分离视频和字幕文件
+            val videoExtensions = listOf(".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".3gp")
+            val subtitleExtensions = listOf(".srt", ".vtt", ".ass", ".ssa", ".ttml")
+            
+            val videos = mutableListOf<Uri>()
+            val subtitles = mutableListOf<Uri>()
+            
             uris.forEach { uri ->
                 contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addVideoFromUri(uri)
+                val name = getFileName(uri).lowercase()
+                when {
+                    subtitleExtensions.any { name.endsWith(it) } -> subtitles.add(uri)
+                    else -> videos.add(uri)
+                }
+            }
+            
+            // 添加视频
+            videos.forEach { uri ->
+                addVideoFromUri(uri, subtitles)
             }
         }
     }
@@ -95,6 +112,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
+    private val manageStoragePermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && android.os.Environment.isExternalStorageManager()) {
+            checkOverlayPermission()
+        } else {
+            showPermissionDeniedDialog("存储")
+        }
+    }
+    
     private val overlayPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -127,6 +154,7 @@ class MainActivity : AppCompatActivity() {
     private fun registerOrientationReceiver() {
         val filter = IntentFilter(Intent.ACTION_CONFIGURATION_CHANGED)
         registerReceiver(orientationReceiver, filter)
+        isReceiverRegistered = true
     }
     
     private fun initViews() {
@@ -170,7 +198,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         btnAddVideo.setOnClickListener {
-            videoPickerLauncher.launch(arrayOf("video/*"))
+            videoPickerLauncher.launch(arrayOf("*/*"))
         }
         
         btnCloseAll.setOnClickListener {
@@ -253,27 +281,48 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun checkPermissions() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED -> {
+        // Android 11+ 需要 MANAGE_EXTERNAL_STORAGE 权限来访问所有文件
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (android.os.Environment.isExternalStorageManager()) {
                 checkOverlayPermission()
+            } else {
+                requestManageStoragePermission()
             }
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_MEDIA_VIDEO
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                checkOverlayPermission()
-            }
-            else -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    storagePermissionLauncher.launch(Manifest.permission.READ_MEDIA_VIDEO)
-                } else {
+        } else {
+            // Android 10 及以下
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    checkOverlayPermission()
+                }
+                else -> {
                     storagePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                 }
             }
         }
+    }
+    
+    private fun requestManageStoragePermission() {
+        AlertDialog.Builder(this)
+            .setTitle("需要存储权限")
+            .setMessage("应用需要访问存储权限来自动加载同名字幕文件")
+            .setPositiveButton("去授权") { _, _ ->
+                try {
+                    val intent = Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    intent.data = Uri.parse("package:$packageName")
+                    manageStoragePermissionLauncher.launch(intent)
+                } catch (e: Exception) {
+                    val intent = Intent(android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                    manageStoragePermissionLauncher.launch(intent)
+                }
+            }
+            .setNegativeButton("取消") { dialog, _ ->
+                dialog.dismiss()
+                checkOverlayPermission()
+            }
+            .show()
     }
     
     private fun checkOverlayPermission() {
@@ -316,11 +365,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private fun addVideoFromUri(uri: Uri) {
+    private fun addVideoFromUri(uri: Uri, subtitleUris: List<Uri> = emptyList()) {
+        val videoTitle = getFileName(uri)
+        val baseName = videoTitle.substringBeforeLast(".")
+        
+        // 查找匹配的字幕文件 - 先从用户选择的，再自动查找
+        var matchedSubtitle = subtitleUris.firstOrNull { subtitleUri ->
+            val subtitleName = getFileName(subtitleUri)
+            val subtitleBaseName = subtitleName.substringBeforeLast(".")
+            subtitleBaseName.equals(baseName, ignoreCase = true)
+        }
+        
+        // 如果用户没有选择字幕，尝试自动查找同名字幕
+        if (matchedSubtitle == null) {
+            matchedSubtitle = findSubtitleByVideoUri(uri, baseName)
+        }
+        
         val videoItem = VideoItem(
             id = UUID.randomUUID().toString(),
             uri = uri,
-            title = getVideoTitle(uri)
+            title = videoTitle,
+            subtitleUri = matchedSubtitle
         )
         
         videoItems.add(videoItem)
@@ -332,6 +397,149 @@ class MainActivity : AppCompatActivity() {
         }
         
         updateEmptyState()
+    }
+    
+    private fun findSubtitleByVideoUri(videoUri: Uri, baseName: String): Uri? {
+        val subtitleExtensions = listOf(".srt", ".vtt", ".ass", ".ssa", ".ttml")
+        
+        try {
+            // 首先尝试通过文件路径直接查找
+            val videoPath = getPathFromUri(videoUri)
+            if (videoPath != null) {
+                val videoFile = java.io.File(videoPath)
+                val parentDir = videoFile.parentFile
+                
+                if (parentDir != null && parentDir.exists()) {
+                    for (ext in subtitleExtensions) {
+                        val subtitleFile = java.io.File(parentDir, "$baseName$ext")
+                        if (subtitleFile.exists()) {
+                            return copySubtitleToPrivate(subtitleFile)
+                        }
+                    }
+                }
+            }
+            
+            // 如果文件路径方式失败，查询 MediaStore
+            val collection = android.provider.MediaStore.Files.getContentUri("external")
+            val projection = arrayOf(
+                android.provider.MediaStore.Files.FileColumns._ID,
+                android.provider.MediaStore.Files.FileColumns.DISPLAY_NAME
+            )
+            
+            contentResolver.query(collection, projection, null, null, null)?.use { cursor ->
+                val idColumn = cursor.getColumnIndex(android.provider.MediaStore.Files.FileColumns._ID)
+                val nameColumn = cursor.getColumnIndex(android.provider.MediaStore.Files.FileColumns.DISPLAY_NAME)
+                
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLong(idColumn)
+                    val name = cursor.getString(nameColumn) ?: continue
+                    
+                    val isSubtitle = subtitleExtensions.any { name.lowercase().endsWith(it) }
+                    if (!isSubtitle) continue
+                    
+                    val fileNameWithoutExt = name.substringBeforeLast(".")
+                    if (fileNameWithoutExt.equals(baseName, ignoreCase = true)) {
+                        return android.content.ContentUris.withAppendedId(collection, id)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        
+        return null
+    }
+    
+    private fun getPathFromUri(uri: Uri): String? {
+        try {
+            val uriStr = uri.toString()
+            
+            // 对于小米文件管理器: content://com.android.fileexplorer.myprovider/external_files/path
+            if (uriStr.contains("com.android.fileexplorer.myprovider")) {
+                val encodedPath = uriStr.substringAfter("myprovider")
+                val decodedPath = Uri.decode(encodedPath)
+                if (decodedPath.startsWith("/external_files/")) {
+                    val filePath = decodedPath.removePrefix("/external_files/")
+                    val fullPath = "/storage/emulated/0/$filePath"
+                    val file = java.io.File(fullPath)
+                    if (file.exists()) {
+                        return fullPath
+                    }
+                }
+            }
+            
+            // 对于 externalstorage URI
+            if (uriStr.contains("com.android.externalstorage.documents")) {
+                val docId = android.provider.DocumentsContract.getDocumentId(uri)
+                val parts = docId.split(":")
+                if (parts.size == 2) {
+                    val storageType = parts[0]
+                    val path = parts[1]
+                    
+                    val storagePath = when (storageType) {
+                        "primary" -> "/storage/emulated/0"
+                        else -> "/storage/$storageType"
+                    }
+                    
+                    val fullPath = "$storagePath/$path"
+                    val file = java.io.File(fullPath)
+                    if (file.exists()) {
+                        return fullPath
+                    }
+                }
+            }
+            
+            // 对于 media URI
+            if (uriStr.contains("com.android.providers.media.documents")) {
+                val docId = android.provider.DocumentsContract.getDocumentId(uri)
+                val parts = docId.split(":")
+                if (parts.size == 2) {
+                    val mediaId = parts[1]
+                    
+                    val cursor = contentResolver.query(
+                        android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                        arrayOf(android.provider.MediaStore.MediaColumns.DATA),
+                        "${android.provider.MediaStore.MediaColumns._ID} = ?",
+                        arrayOf(mediaId),
+                        null
+                    )
+                    
+                    cursor?.use {
+                        if (it.moveToFirst()) {
+                            val dataIndex = it.getColumnIndex(android.provider.MediaStore.MediaColumns.DATA)
+                            if (dataIndex >= 0) {
+                                return it.getString(dataIndex)
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        
+        return null
+    }
+    
+    private fun copySubtitleToPrivate(subtitleFile: java.io.File): Uri? {
+        try {
+            val privateDir = java.io.File(filesDir, "subtitles")
+            if (!privateDir.exists()) {
+                privateDir.mkdirs()
+            }
+            
+            val privateFile = java.io.File(privateDir, subtitleFile.name)
+            subtitleFile.copyTo(privateFile, overwrite = true)
+            
+            return androidx.core.content.FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                privateFile
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
     
     private fun getVideoTitle(uri: Uri): String {
@@ -348,6 +556,42 @@ class MainActivity : AppCompatActivity() {
                 uri.lastPathSegment ?: "未知视频"
             }
         } ?: uri.lastPathSegment ?: "未知视频"
+    }
+    
+    private fun getFileName(uri: Uri): String {
+        var name = ""
+        
+        // 方法1: 通过 ContentResolver 查询
+        try {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val nameIndex = it.getColumnIndex(android.provider.MediaStore.MediaColumns.DISPLAY_NAME)
+                    if (nameIndex >= 0) {
+                        name = it.getString(nameIndex) ?: ""
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // ignore
+        }
+        
+        // 方法2: 通过 URI path 获取
+        if (name.isEmpty()) {
+            name = uri.lastPathSegment ?: ""
+            if (name.contains("/")) {
+                name = name.substringAfterLast("/")
+            }
+            if (name.contains("%")) {
+                try {
+                    name = java.net.URLDecoder.decode(name, "UTF-8")
+                } catch (e: Exception) {
+                    // ignore
+                }
+            }
+        }
+        
+        return name
     }
     
     private fun createFloatingWindow(videoItem: VideoItem) {
@@ -473,7 +717,10 @@ class MainActivity : AppCompatActivity() {
     
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(orientationReceiver)
+        if (isReceiverRegistered) {
+            unregisterReceiver(orientationReceiver)
+            isReceiverRegistered = false
+        }
         if (::floatingWindowManager.isInitialized) {
             floatingWindowManager.removeAllWindows()
         }

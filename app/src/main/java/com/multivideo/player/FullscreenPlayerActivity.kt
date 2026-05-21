@@ -128,7 +128,10 @@ class FullscreenPlayerActivity : Activity() {
         }
         
         findViewById<ImageButton>(R.id.btnForward).setOnClickListener {
-            player.seekTo((player.currentPosition + 10000).coerceAtMost(player.duration))
+            val duration = player.duration
+            if (duration > 0) {
+                player.seekTo((player.currentPosition + 10000).coerceAtMost(duration))
+            }
         }
         
         seekBarProgress.max = 1000
@@ -180,7 +183,10 @@ class FullscreenPlayerActivity : Activity() {
                     player.seekTo((player.currentPosition - 10000).coerceAtLeast(0))
                 } else {
                     // 右侧双击：快进10秒
-                    player.seekTo((player.currentPosition + 10000).coerceAtMost(player.duration))
+                    val duration = player.duration
+                    if (duration > 0) {
+                        player.seekTo((player.currentPosition + 10000).coerceAtMost(duration))
+                    }
                 }
                 return true
             }

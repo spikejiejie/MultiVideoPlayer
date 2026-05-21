@@ -113,6 +113,28 @@
                 android:scaleType="centerInside"
                 android:contentDescription="@string/play" />
 
+            <!-- 后退10秒 -->
+            <ImageButton
+                android:id="@+id/btnRewind"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_rewind"
+                android:background="@drawable/button_transparent_background"
+                android:scaleType="centerInside"
+                android:layout_marginStart="4dp"
+                android:contentDescription="后退" />
+
+            <!-- 快进10秒 -->
+            <ImageButton
+                android:id="@+id/btnForward"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_forward"
+                android:background="@drawable/button_transparent_background"
+                android:scaleType="centerInside"
+                android:layout_marginStart="4dp"
+                android:contentDescription="快进" />
+
             <!-- 循环播放 -->
             <ToggleButton
                 android:id="@+id/btnLoop"

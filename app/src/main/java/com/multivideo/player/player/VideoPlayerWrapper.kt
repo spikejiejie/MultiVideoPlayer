@@ -66,19 +66,48 @@ class VideoPlayerWrapper(
             // 获取不带扩展名的视频文件名
             val baseName = videoName.substringBeforeLast(".")
             
-            // 获取父目录
-            val parentUri = DocumentsContract.buildDocumentUriUsingTree(
-                uri,
-                DocumentsContract.getTreeDocumentId(uri)
-            )
-            
-            // 尝试通过构建同名字幕URI
-            // 由于content URI限制，我们尝试直接在initialize后加载
-            // 用户可以通过按钮手动加载字幕
-            
+            // 尝试多种方式获取父目录并查找字幕
+            val subtitleUri = findSubtitleFile(baseName)
+            if (subtitleUri != null) {
+                loadSubtitle(subtitleUri)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+    
+    private fun findSubtitleFile(baseName: String): Uri? {
+        try {
+            val videoDoc = DocumentFile.fromSingleUri(context, uri) ?: return null
+            val parentDoc = videoDoc.parentFile
+            if (parentDoc != null) {
+                val subtitle = searchSubtitleInDirectory(parentDoc, baseName)
+                if (subtitle != null) return subtitle
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+    
+    private fun searchSubtitleInDirectory(directory: DocumentFile, baseName: String): Uri? {
+        try {
+            for (file in directory.listFiles()) {
+                val fileName = file.name ?: continue
+                val fileNameWithoutExt = fileName.substringBeforeLast(".")
+                
+                // 检查是否是同名字幕文件
+                if (fileNameWithoutExt.equals(baseName, ignoreCase = true)) {
+                    val ext = fileName.substringAfterLast(".", "").lowercase()
+                    if (subtitleExtensions.any { it == ".$ext" }) {
+                        return file.uri
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
     
     fun loadSubtitle(subtitleUri: Uri, language: String = "zh") {

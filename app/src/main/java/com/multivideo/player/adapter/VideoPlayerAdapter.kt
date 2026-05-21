@@ -37,6 +37,8 @@ class VideoPlayerAdapter(
         val playerView: PlayerView = itemView.findViewById(R.id.playerView)
         val tvSeekIndicator: TextView = itemView.findViewById(R.id.tvSeekIndicator)
         val btnPlayPause: ImageButton = itemView.findViewById(R.id.btnPlayPause)
+        val btnRewind: ImageButton = itemView.findViewById(R.id.btnRewind)
+        val btnForward: ImageButton = itemView.findViewById(R.id.btnForward)
         val btnLoop: ToggleButton = itemView.findViewById(R.id.btnLoop)
         val tvTime: TextView = itemView.findViewById(R.id.tvTime)
         val seekBarProgress: SeekBar = itemView.findViewById(R.id.seekBarProgress)
@@ -67,6 +69,11 @@ class VideoPlayerAdapter(
             }
         }
         
+        // 自动加载字幕
+        if (videoItem.subtitleUri != null) {
+            playerWrapper.loadSubtitle(videoItem.subtitleUri!!)
+        }
+        
         // 确保 playerView 绑定正确
         playerWrapper.playerView = holder.playerView
         holder.playerView.player = playerWrapper.player
@@ -75,6 +82,19 @@ class VideoPlayerAdapter(
         holder.btnPlayPause.setOnClickListener {
             playerWrapper.togglePlayPause()
             updatePlayPauseButton(holder, playerWrapper)
+        }
+        
+        // 后退10秒
+        holder.btnRewind.setOnClickListener {
+            playerWrapper.seekTo((playerWrapper.currentPosition - 10000).coerceAtLeast(0))
+        }
+        
+        // 快进10秒
+        holder.btnForward.setOnClickListener {
+            val duration = playerWrapper.duration
+            if (duration > 0) {
+                playerWrapper.seekTo((playerWrapper.currentPosition + 10000).coerceAtMost(duration))
+            }
         }
         
         // 循环播放
@@ -165,22 +185,23 @@ class VideoPlayerAdapter(
                 
                 val dx = e2.x - e1.x
                 val viewWidth = holder.playerView.width
+                val duration = playerWrapper.duration
                 
-                if (Math.abs(dx) > 30) {
+                if (Math.abs(dx) > 30 && duration > 0) {
                     if (!isSeeking) {
                         isSeeking = true
                         seekStartPosition = playerWrapper.currentPosition
                         holder.tvSeekIndicator.visibility = View.VISIBLE
                     }
                     
-                    val seekDelta = (dx / viewWidth * playerWrapper.duration * 0.3).toLong()
+                    val seekDelta = (dx / viewWidth * duration * 0.3).toLong()
                     val newPosition = (seekStartPosition + seekDelta)
-                        .coerceIn(0, playerWrapper.duration)
+                        .coerceIn(0, duration)
                     
                     playerWrapper.seekTo(newPosition)
                     
                     val currentStr = formatTime(newPosition)
-                    val totalStr = formatTime(playerWrapper.duration)
+                    val totalStr = formatTime(duration)
                     holder.tvSeekIndicator.text = "$currentStr / $totalStr"
                 }
                 return true

@@ -61,6 +61,19 @@ class FloatingWindow(
             updatePlayPauseButton()
         }
         
+        // 后退10秒按钮
+        view.findViewById<ImageButton>(R.id.btnRewind).setOnClickListener {
+            playerWrapper.seekTo((playerWrapper.currentPosition - 10000).coerceAtLeast(0))
+        }
+        
+        // 快进10秒按钮
+        view.findViewById<ImageButton>(R.id.btnForward).setOnClickListener {
+            val duration = playerWrapper.duration
+            if (duration > 0) {
+                playerWrapper.seekTo((playerWrapper.currentPosition + 10000).coerceAtMost(duration))
+            }
+        }
+        
         // 循环播放按钮
         view.findViewById<ToggleButton>(R.id.btnLoop).apply {
             isChecked = videoItem.isLooping
@@ -138,22 +151,23 @@ class FloatingWindow(
                 
                 val dx = e2.x - e1.x
                 val viewWidth = playerView.width
+                val duration = playerWrapper.duration
                 
-                if (Math.abs(dx) > 30) {
+                if (Math.abs(dx) > 30 && duration > 0) {
                     if (!isSeeking) {
                         isSeeking = true
                         seekStartPosition = playerWrapper.currentPosition
                         tvSeekIndicator.visibility = View.VISIBLE
                     }
                     
-                    val seekDelta = (dx / viewWidth * playerWrapper.duration * 0.3).toLong()
+                    val seekDelta = (dx / viewWidth * duration * 0.3).toLong()
                     val newPosition = (seekStartPosition + seekDelta)
-                        .coerceIn(0, playerWrapper.duration)
+                        .coerceIn(0, duration)
                     
                     playerWrapper.seekTo(newPosition)
                     
                     val currentStr = formatTime(newPosition)
-                    val totalStr = formatTime(playerWrapper.duration)
+                    val totalStr = formatTime(duration)
                     tvSeekIndicator.text = "$currentStr / $totalStr"
                 }
                 return true
@@ -209,6 +223,7 @@ class FloatingWindow(
     }
     
     private fun formatTime(ms: Long): String {
+        if (ms < 0) return "00:00"
         val hours = TimeUnit.MILLISECONDS.toHours(ms)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(ms) % 60
         val seconds = TimeUnit.MILLISECONDS.toSeconds(ms) % 60
