@@ -12,7 +12,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import com.google.android.exoplayer2.ExoPlayer
@@ -46,6 +45,7 @@ class FullscreenPlayerActivity : Activity() {
     private var currentBrightness: Float = 0.5f
     private var currentVolume: Int = 0
     private var maxVolume: Int = 0
+    private var startVolume: Int = 0
     
     private var isControlsVisible = true
     private val handler = Handler(Looper.getMainLooper())
@@ -72,6 +72,7 @@ class FullscreenPlayerActivity : Activity() {
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
         currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        startVolume = currentVolume
         
         // 获取当前亮度
         try {
@@ -206,8 +207,8 @@ class FullscreenPlayerActivity : Activity() {
                 val viewHeight = playerView.height
                 
                 if (e1.x < screenWidth / 2) {
-                    // 左侧：调节亮度
-                    val deltaBrightness = deltaY / viewHeight
+                    // 左侧：调节亮度（降低敏感度）
+                    val deltaBrightness = deltaY / viewHeight * 0.7f
                     currentBrightness = (currentBrightness + deltaBrightness).coerceIn(0.01f, 1f)
                     
                     val layoutParams = window.attributes
@@ -217,8 +218,8 @@ class FullscreenPlayerActivity : Activity() {
                     // 显示亮度提示
                     showBrightnessIndicator()
                 } else {
-                    // 右侧：调节音量
-                    val deltaVolume = (deltaY / viewHeight * maxVolume).toInt()
+                    // 右侧：调节音量（降低敏感度，使用系统音量）
+                    val deltaVolume = (deltaY / viewHeight * maxVolume * 0.7f).toInt()
                     currentVolume = (currentVolume + deltaVolume).coerceIn(0, maxVolume)
                     audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
                     
@@ -311,8 +312,9 @@ class FullscreenPlayerActivity : Activity() {
     }
     
     override fun finish() {
-        // 返回视频位置给调用方
+        // 返回视频位置和音量给调用方
         intent.putExtra("video_position", player.currentPosition)
+        intent.putExtra("video_volume", currentVolume.toFloat() / maxVolume)
         setResult(RESULT_OK, intent)
         super.finish()
     }

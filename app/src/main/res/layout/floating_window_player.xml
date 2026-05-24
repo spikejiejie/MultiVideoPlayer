@@ -76,6 +76,66 @@
             android:textSize="16sp"
             android:visibility="gone" />
 
+        <!-- 音量指示器（左侧） -->
+        <LinearLayout
+            android:id="@+id/volumeIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#AA000000"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivVolumeIndicatorIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_volume_up"
+                android:scaleType="centerInside" />
+
+            <TextView
+                android:id="@+id/tvVolumePercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100%"
+                android:textColor="#FFFFFFFF"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- 亮度指示器（右侧） -->
+        <LinearLayout
+            android:id="@+id/brightnessIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#AA000000"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivBrightnessIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_brightness"
+                android:scaleType="centerInside" />
+
+            <TextView
+                android:id="@+id/tvBrightnessPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100%"
+                android:textColor="#FFFFFFFF"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
     </FrameLayout>
 
     <!-- 控制栏 -->

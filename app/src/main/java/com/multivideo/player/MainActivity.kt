@@ -90,17 +90,25 @@ class MainActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val position = result.data?.getLongExtra("video_position", 0) ?: 0
+            val volume = result.data?.getFloatExtra("video_volume", 1.0f) ?: 1.0f
             val videoId = result.data?.getStringExtra("video_id") ?: return@registerForActivityResult
             val videoItem = videoItems.find { it.id == videoId }
             
-            // 保存位置到 videoItem
+            // 保存位置和音量到 videoItem
             videoItem?.currentPosition = position
+            videoItem?.volume = volume
             
-            // 恢复视频位置
+            // 恢复视频位置和音量
             if (isFloatingMode) {
-                floatingWindowManager.getWindow(videoId)?.playerWrapper?.seekTo(position)
+                floatingWindowManager.getWindow(videoId)?.let { window ->
+                    window.playerWrapper.seekTo(position)
+                    window.playerWrapper.volume = volume
+                }
             } else {
-                videoPlayerAdapter?.getPlayer(videoId)?.seekTo(position)
+                videoPlayerAdapter?.getPlayer(videoId)?.let { player ->
+                    player.seekTo(position)
+                    player.volume = volume
+                }
             }
         }
         // 恢复所有视频播放

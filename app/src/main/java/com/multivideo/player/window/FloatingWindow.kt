@@ -1,5 +1,6 @@
 package com.multivideo.player.window
 
+import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -168,6 +169,18 @@ class FloatingWindow(
     }
     
     private fun setupVideoGesture(playerView: PlayerView) {
+        var isVolumeAdjusting = false
+        var isBrightnessAdjusting = false
+        var startVolume: Float = 0f
+        var startBrightness: Float = 0f
+        var startY: Float = 0f
+        
+        val volumeIndicator = view.findViewById<LinearLayout>(R.id.volumeIndicator)
+        val ivVolumeIndicatorIcon = view.findViewById<ImageView>(R.id.ivVolumeIndicatorIcon)
+        val tvVolumePercent = view.findViewById<TextView>(R.id.tvVolumePercent)
+        val brightnessIndicator = view.findViewById<LinearLayout>(R.id.brightnessIndicator)
+        val tvBrightnessPercent = view.findViewById<TextView>(R.id.tvBrightnessPercent)
+        
         val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapUp(e: MotionEvent): Boolean {
                 toggleControlVisibility()
@@ -183,25 +196,74 @@ class FloatingWindow(
                 if (e1 == null) return false
                 
                 val dx = e2.x - e1.x
+                val dy = e2.y - e1.y
                 val viewWidth = playerView.width
+                val viewHeight = playerView.height
                 val duration = playerWrapper.duration
+                val startX = e1.x
                 
-                if (Math.abs(dx) > 30 && duration > 0) {
-                    if (!isSeeking) {
-                        isSeeking = true
-                        seekStartPosition = playerWrapper.currentPosition
-                        tvSeekIndicator.visibility = View.VISIBLE
+                // 判断是水平滑动还是垂直滑动
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    // 水平滑动 - 控制进度（降低敏感度）
+                    if (Math.abs(dx) > 30 && duration > 0) {
+                        if (!isSeeking) {
+                            isSeeking = true
+                            seekStartPosition = playerWrapper.currentPosition
+                            tvSeekIndicator.visibility = View.VISIBLE
+                        }
+                        
+                        // 降低敏感度：从 0.3 改为 0.15
+                        val seekDelta = (dx / viewWidth * duration * 0.15).toLong()
+                        val newPosition = (seekStartPosition + seekDelta)
+                            .coerceIn(0, duration)
+                        
+                        playerWrapper.seekTo(newPosition)
+                        
+                        val currentStr = formatTime(newPosition)
+                        val totalStr = formatTime(duration)
+                        tvSeekIndicator.text = "$currentStr / $totalStr"
                     }
-                    
-                    val seekDelta = (dx / viewWidth * duration * 0.3).toLong()
-                    val newPosition = (seekStartPosition + seekDelta)
-                        .coerceIn(0, duration)
-                    
-                    playerWrapper.seekTo(newPosition)
-                    
-                    val currentStr = formatTime(newPosition)
-                    val totalStr = formatTime(duration)
-                    tvSeekIndicator.text = "$currentStr / $totalStr"
+                } else {
+                    // 垂直滑动
+                    if (startX < viewWidth / 2) {
+                        // 左侧 - 控制亮度
+                        if (!isBrightnessAdjusting) {
+                            isBrightnessAdjusting = true
+                            startBrightness = getScreenBrightness()
+                            startY = e1.y
+                            brightnessIndicator.visibility = View.VISIBLE
+                        }
+                        
+                        val brightnessChange = (startY - e2.y) / viewHeight * 0.7f
+                        val newBrightness = (startBrightness + brightnessChange).coerceIn(0.01f, 1f)
+                        setScreenBrightness(newBrightness)
+                        
+                        // 更新亮度指示器
+                        val brightnessPercent = (newBrightness * 100).toInt()
+                        tvBrightnessPercent.text = "$brightnessPercent%"
+                    } else {
+                        // 右侧 - 控制音量
+                        if (!isVolumeAdjusting) {
+                            isVolumeAdjusting = true
+                            startVolume = playerWrapper.volume
+                            startY = e1.y
+                            volumeIndicator.visibility = View.VISIBLE
+                        }
+                        
+                        val volumeChange = (startY - e2.y) / viewHeight * 0.7f
+                        val newVolume = (startVolume + volumeChange).coerceIn(0f, 1f)
+                        playerWrapper.volume = newVolume
+                        videoItem.volume = newVolume
+                        
+                        // 更新音量指示器
+                        val volumePercent = (newVolume * 100).toInt()
+                        tvVolumePercent.text = "$volumePercent%"
+                        ivVolumeIndicatorIcon.setImageResource(
+                            if (volumePercent == 0) R.drawable.ic_volume else R.drawable.ic_volume_up
+                        )
+                        // 同步更新控制栏的音量条
+                        view.findViewById<SeekBar>(R.id.seekBarVolume).progress = volumePercent
+                    }
                 }
                 return true
             }
@@ -215,8 +277,37 @@ class FloatingWindow(
                     isSeeking = false
                     tvSeekIndicator.visibility = View.GONE
                 }
+                if (isVolumeAdjusting) {
+                    isVolumeAdjusting = false
+                    volumeIndicator.visibility = View.GONE
+                }
+                if (isBrightnessAdjusting) {
+                    isBrightnessAdjusting = false
+                    brightnessIndicator.visibility = View.GONE
+                }
             }
             true
+        }
+    }
+    
+    private fun getScreenBrightness(): Float {
+        return try {
+            val activity = context as? Activity
+            val layoutParams = activity?.window?.attributes
+            layoutParams?.screenBrightness ?: 0.5f
+        } catch (e: Exception) {
+            0.5f
+        }
+    }
+    
+    private fun setScreenBrightness(brightness: Float) {
+        try {
+            val activity = context as? Activity
+            val layoutParams = activity?.window?.attributes
+            layoutParams?.screenBrightness = brightness
+            activity?.window?.attributes = layoutParams
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
     
