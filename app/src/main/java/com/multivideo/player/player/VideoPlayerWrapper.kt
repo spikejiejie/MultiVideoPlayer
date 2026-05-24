@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -25,6 +26,12 @@ class VideoPlayerWrapper(
             field = value
             player?.repeatMode = if (value) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
         }
+
+    var volume: Float = 1.0f
+        set(value) {
+            field = value.coerceIn(0f, 1f)
+            player?.volume = field
+        }
     
     var currentPosition: Long
         get() = player?.currentPosition ?: 0
@@ -40,17 +47,32 @@ class VideoPlayerWrapper(
     
     private val subtitleExtensions = listOf(".srt", ".vtt", ".ass", ".ssa", ".ttml")
     
-    fun initialize() {
+    fun initialize(initialVolume: Float = 1.0f) {
         val mediaItem = MediaItem.Builder()
             .setUri(uri)
             .build()
         
-        player = ExoPlayer.Builder(context).build().apply {
-            setMediaItem(mediaItem)
-            prepare()
-            playWhenReady = true
-            repeatMode = if (isLooping) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
-        }
+        volume = initialVolume
+        
+        // 使用较小的缓冲区以减少内存占用（本地视频场景）
+        val loadControl = DefaultLoadControl.Builder()
+            .setBufferDurationsMs(
+                10000,  // 最小缓冲 10秒
+                30000,  // 最大缓冲 30秒
+                1500,   // 播放前缓冲 1.5秒
+                2000    // 重新缓冲 2秒
+            )
+            .build()
+        
+        player = ExoPlayer.Builder(context)
+            .setLoadControl(loadControl)
+            .build().apply {
+                setMediaItem(mediaItem)
+                volume = initialVolume
+                prepare()
+                playWhenReady = true
+                repeatMode = if (isLooping) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+            }
         
         playerView?.player = player
         

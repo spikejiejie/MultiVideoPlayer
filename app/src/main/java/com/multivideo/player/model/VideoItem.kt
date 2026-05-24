@@ -13,6 +13,7 @@ data class VideoItem(
     val title: String,
     var subtitleUri: Uri? = null,
     var isLooping: Boolean = false,
+    var volume: Float = 1.0f,
     var currentPosition: Long = 0,
     var windowX: Int = 0,
     var windowY: Int = 0,

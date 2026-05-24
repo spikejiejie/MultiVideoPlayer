@@ -146,6 +146,26 @@
                 android:layout_marginStart="8dp"
                 android:button="@drawable/ic_loop_selector" />
 
+            <!-- 音量图标 -->
+            <ImageView
+                android:id="@+id/ivVolumeIcon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="6dp"
+                android:src="@drawable/ic_volume"
+                android:scaleType="centerInside"
+                android:contentDescription="音量" />
+
+            <!-- 音量控制 -->
+            <SeekBar
+                android:id="@+id/seekBarVolume"
+                android:layout_width="50dp"
+                android:layout_height="18dp"
+                android:max="100"
+                android:progress="100"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:thumbTint="@color/player_seekbar_thumb" />
+
             <!-- 时间显示 -->
             <TextView
                 android:id="@+id/tvTime"

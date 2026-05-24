@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -47,6 +48,8 @@ class VideoPlayerAdapter(
         val btnFullscreen: ImageButton = itemView.findViewById(R.id.btnFullscreen)
         val controlBar: View = itemView.findViewById(R.id.controlBar)
         val titleBar: View = itemView.findViewById(R.id.titleBar)
+        val seekBarVolume: SeekBar = itemView.findViewById(R.id.seekBarVolume)
+        val ivVolumeIcon: ImageView = itemView.findViewById(R.id.ivVolumeIcon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
@@ -60,57 +63,89 @@ class VideoPlayerAdapter(
         holder.tvVideoTitle.text = videoItem.title
         holder.playerView.useController = false
         
-        // 创建或获取播放器
-        val playerWrapper = players.getOrPut(videoItem.id) {
-            VideoPlayerWrapper(context, videoItem.uri).apply {
-                playerView = holder.playerView
-                isLooping = videoItem.isLooping
-                initialize()
-            }
-        }
+        // 播放器懒加载：只在 onViewAttachedToWindow 中初始化
+        // 这里只绑定已存在的播放器
+        val playerWrapper = players[videoItem.id]
         
-        // 自动加载字幕
-        if (videoItem.subtitleUri != null) {
-            playerWrapper.loadSubtitle(videoItem.subtitleUri!!)
+        if (playerWrapper != null) {
+            playerWrapper.playerView = holder.playerView
+            holder.playerView.player = playerWrapper.player
+            startTimeUpdate(holder, videoItem.id, playerWrapper)
+        } else {
+            // 清空 PlayerView，等待 attach 时初始化
+            holder.playerView.player = null
         }
-        
-        // 确保 playerView 绑定正确
-        playerWrapper.playerView = holder.playerView
-        holder.playerView.player = playerWrapper.player
         
         // 播放/暂停
         holder.btnPlayPause.setOnClickListener {
-            playerWrapper.togglePlayPause()
-            updatePlayPauseButton(holder, playerWrapper)
+            players[videoItem.id]?.let { pw ->
+                pw.togglePlayPause()
+                updatePlayPauseButton(holder, pw)
+            }
         }
         
         // 后退10秒
         holder.btnRewind.setOnClickListener {
-            playerWrapper.seekTo((playerWrapper.currentPosition - 10000).coerceAtLeast(0))
+            players[videoItem.id]?.let { pw ->
+                pw.seekTo((pw.currentPosition - 10000).coerceAtLeast(0))
+            }
         }
         
         // 快进10秒
         holder.btnForward.setOnClickListener {
-            val duration = playerWrapper.duration
-            if (duration > 0) {
-                playerWrapper.seekTo((playerWrapper.currentPosition + 10000).coerceAtMost(duration))
+            players[videoItem.id]?.let { pw ->
+                val duration = pw.duration
+                if (duration > 0) {
+                    pw.seekTo((pw.currentPosition + 10000).coerceAtMost(duration))
+                }
             }
         }
         
         // 循环播放
         holder.btnLoop.isChecked = videoItem.isLooping
         holder.btnLoop.setOnCheckedChangeListener { _, isChecked ->
-            playerWrapper.isLooping = isChecked
+            players[videoItem.id]?.let { pw ->
+                pw.isLooping = isChecked
+            }
             videoItem.isLooping = isChecked
         }
+        
+        // 音量控制
+        holder.seekBarVolume.apply {
+            max = 100
+            progress = (videoItem.volume * 100).toInt()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (fromUser) {
+                        val volume = progress / 100f
+                        players[videoItem.id]?.let { pw ->
+                            pw.volume = volume
+                        }
+                        videoItem.volume = volume
+                        holder.ivVolumeIcon.setImageResource(
+                            if (progress == 0) R.drawable.ic_volume else R.drawable.ic_volume_up
+                        )
+                    }
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            })
+        }
+        holder.ivVolumeIcon.setImageResource(
+            if (videoItem.volume == 0f) R.drawable.ic_volume else R.drawable.ic_volume_up
+        )
         
         // 进度条
         holder.seekBarProgress.max = 1000
         holder.seekBarProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser && playerWrapper.duration > 0) {
-                    val pos = (progress.toLong() * playerWrapper.duration) / 1000
-                    playerWrapper.seekTo(pos)
+                if (fromUser) {
+                    players[videoItem.id]?.let { pw ->
+                        if (pw.duration > 0) {
+                            val pos = (progress.toLong() * pw.duration) / 1000
+                            pw.seekTo(pos)
+                        }
+                    }
                 }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -133,10 +168,58 @@ class VideoPlayerAdapter(
         }
         
         // 视频区域手势
-        setupVideoGesture(holder, playerWrapper)
+        if (playerWrapper != null) {
+            setupVideoGesture(holder, playerWrapper)
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: VideoViewHolder) {
+        val position = holder.bindingAdapterPosition
+        if (position == RecyclerView.NO_POSITION || position >= videoItems.size) return
         
-        // 启动定时更新
-        startTimeUpdate(holder, videoItem.id, playerWrapper)
+        val videoItem = videoItems[position]
+        
+        // 懒加载：仅在 PlayerView 可见时初始化播放器
+        if (players[videoItem.id] == null) {
+            val playerWrapper = VideoPlayerWrapper(context, videoItem.uri).apply {
+                playerView = holder.playerView
+                isLooping = videoItem.isLooping
+                initialize(videoItem.volume)
+            }
+            
+            players[videoItem.id] = playerWrapper
+            
+            // 自动加载字幕
+            if (videoItem.subtitleUri != null) {
+                playerWrapper.loadSubtitle(videoItem.subtitleUri!!)
+            }
+            
+            // 恢复到之前保存的播放位置
+            if (videoItem.currentPosition > 0) {
+                playerWrapper.seekTo(videoItem.currentPosition)
+            }
+            
+            holder.playerView.player = playerWrapper.player
+            setupVideoGesture(holder, playerWrapper)
+            startTimeUpdate(holder, videoItem.id, playerWrapper)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: VideoViewHolder) {
+        val position = holder.bindingAdapterPosition
+        if (position == RecyclerView.NO_POSITION || position >= videoItems.size) return
+        
+        val videoItem = videoItems[position]
+        
+        // 保存当前播放位置和音量，释放不可见的播放器以节省内存
+        players[videoItem.id]?.let { pw ->
+            videoItem.currentPosition = pw.currentPosition
+            videoItem.volume = pw.volume
+        }
+        stopTimeUpdate(videoItem.id)
+        players[videoItem.id]?.release()
+        players.remove(videoItem.id)
+        holder.playerView.player = null
     }
     
     private fun startTimeUpdate(holder: VideoViewHolder, videoId: String, playerWrapper: VideoPlayerWrapper) {
@@ -271,10 +354,18 @@ class VideoPlayerAdapter(
         players.remove(videoId)
     }
     
-    fun releaseAll() {
+    fun releaseAll(videoItems: List<VideoItem>? = null) {
         // 先停止所有定时器
         val handlerKeys = handlers.keys.toList()
         handlerKeys.forEach { stopTimeUpdate(it) }
+        
+        // 保存所有活跃播放器的位置和音量到 videoItem
+        videoItems?.forEach { item ->
+            players[item.id]?.let { pw ->
+                item.currentPosition = pw.currentPosition
+                item.volume = pw.volume
+            }
+        }
         
         // 再释放所有播放器
         val playerKeys = players.keys.toList()

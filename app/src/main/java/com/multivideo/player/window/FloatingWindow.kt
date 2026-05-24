@@ -1,11 +1,14 @@
 package com.multivideo.player.window
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -28,6 +31,8 @@ class FloatingWindow(
     private var seekStartPosition: Long = 0
     private var isSeeking = false
     private lateinit var tvSeekIndicator: TextView
+    private val handler = Handler(Looper.getMainLooper())
+    private var updateRunnable: Runnable? = null
     
     fun setupViews() {
         val titleBar = view.findViewById<LinearLayout>(R.id.titleBar)
@@ -102,6 +107,34 @@ class FloatingWindow(
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
         }
+        
+        // 音量控制
+        val seekBarVolume = view.findViewById<SeekBar>(R.id.seekBarVolume)
+        val ivVolumeIcon = view.findViewById<ImageView>(R.id.ivVolumeIcon)
+        seekBarVolume.apply {
+            max = 100
+            progress = (videoItem.volume * 100).toInt()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (fromUser) {
+                        val volume = progress / 100f
+                        playerWrapper.volume = volume
+                        videoItem.volume = volume
+                        ivVolumeIcon.setImageResource(
+                            if (progress == 0) R.drawable.ic_volume else R.drawable.ic_volume_up
+                        )
+                    }
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            })
+        }
+        ivVolumeIcon.setImageResource(
+            if (videoItem.volume == 0f) R.drawable.ic_volume else R.drawable.ic_volume_up
+        )
+        
+        // 启动定时更新
+        startTimeUpdate()
     }
     
     private fun setupTitleBarDrag(titleBar: View) {
@@ -222,6 +255,25 @@ class FloatingWindow(
         }
     }
     
+    private fun startTimeUpdate() {
+        stopTimeUpdate()
+        updateRunnable = object : Runnable {
+            override fun run() {
+                updateTimeDisplay()
+                updatePlayPauseButton()
+                handler.postDelayed(this, 500)
+            }
+        }
+        handler.post(updateRunnable!!)
+    }
+    
+    private fun stopTimeUpdate() {
+        updateRunnable?.let {
+            handler.removeCallbacks(it)
+        }
+        updateRunnable = null
+    }
+    
     private fun formatTime(ms: Long): String {
         if (ms < 0) return "00:00"
         val hours = TimeUnit.MILLISECONDS.toHours(ms)
@@ -236,6 +288,7 @@ class FloatingWindow(
     }
     
     fun release() {
+        stopTimeUpdate()
         playerWrapper.release()
     }
     

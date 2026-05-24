@@ -141,6 +141,24 @@
                 android:layout_marginStart="8dp"
                 android:button="@drawable/ic_loop_selector" />
 
+            <ImageView
+                android:id="@+id/ivVolumeIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_volume"
+                android:scaleType="centerInside"
+                android:contentDescription="音量" />
+
+            <SeekBar
+                android:id="@+id/seekBarVolume"
+                android:layout_width="60dp"
+                android:layout_height="20dp"
+                android:max="100"
+                android:progress="100"
+                android:progressDrawable="@drawable/seekbar_progress"
+                android:thumbTint="@color/player_seekbar_thumb" />
+
             <TextView
                 android:id="@+id/tvTime"
                 android:layout_width="0dp"

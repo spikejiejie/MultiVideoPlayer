@@ -91,6 +91,11 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             val position = result.data?.getLongExtra("video_position", 0) ?: 0
             val videoId = result.data?.getStringExtra("video_id") ?: return@registerForActivityResult
+            val videoItem = videoItems.find { it.id == videoId }
+            
+            // 保存位置到 videoItem
+            videoItem?.currentPosition = position
+            
             // 恢复视频位置
             if (isFloatingMode) {
                 floatingWindowManager.getWindow(videoId)?.playerWrapper?.seekTo(position)
@@ -240,8 +245,15 @@ class MainActivity : AppCompatActivity() {
         floatContainer.visibility = View.GONE
         updateModeButtons()
         
-        // 如果有悬浮窗，关闭它们
+        // 保存悬浮窗的当前位置和音量
         if (::floatingWindowManager.isInitialized) {
+            floatingWindowManager.getAllWindows().forEach { window ->
+                val videoItem = videoItems.find { it.id == window.videoItem.id }
+                videoItem?.let {
+                    it.currentPosition = window.playerWrapper.currentPosition
+                    it.volume = window.playerWrapper.volume
+                }
+            }
             floatingWindowManager.removeAllWindows()
         }
         
@@ -256,8 +268,8 @@ class MainActivity : AppCompatActivity() {
         floatContainer.visibility = View.VISIBLE
         updateModeButtons()
         
-        // 释放应用内播放器
-        videoPlayerAdapter?.releaseAll()
+        // 释放应用内播放器（会自动保存位置和音量到 videoItem）
+        videoPlayerAdapter?.releaseAll(videoItems)
         
         // 创建悬浮窗
         if (Settings.canDrawOverlays(this)) {
@@ -669,6 +681,7 @@ class MainActivity : AppCompatActivity() {
             // 悬浮窗模式下，先获取播放位置，然后切换到应用内模式
             val window = floatingWindowManager.getWindow(videoId)
             val position = window?.playerWrapper?.currentPosition ?: 0
+            videoItem.currentPosition = position
             // 切换到应用内模式
             switchToInAppMode()
             // 返回视频位置
@@ -678,13 +691,16 @@ class MainActivity : AppCompatActivity() {
             videoPlayerAdapter?.getPlayer(videoId)
         }
         
+        // 获取播放位置（优先从播放器获取，其次从保存的位置获取）
+        val currentPosition = player?.currentPosition ?: videoItem.currentPosition
+        
         // 暂停所有视频
         pauseAllVideos()
         
         val intent = Intent(this, FullscreenPlayerActivity::class.java).apply {
             putExtra("video_uri", videoItem.uri.toString())
             putExtra("video_title", videoItem.title)
-            putExtra("video_position", player?.currentPosition ?: 0)
+            putExtra("video_position", currentPosition)
             putExtra("video_id", videoId)
         }
         fullscreenLauncher.launch(intent)
@@ -714,7 +730,18 @@ class MainActivity : AppCompatActivity() {
             View.GONE
         }
     }
-    
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        // 如果有视频正在播放，将应用移到后台而不是关闭所有视频
+        if (videoItems.isNotEmpty()) {
+            moveTaskToBack(true)
+        } else {
+            @Suppress("DEPRECATION")
+            super.onBackPressed()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (isReceiverRegistered) {

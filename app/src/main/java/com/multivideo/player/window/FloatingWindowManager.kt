@@ -70,7 +70,12 @@ class FloatingWindowManager(
         windows[videoItem.id] = floatingWindow
         
         windowManager.addView(view, floatingWindow.layoutParams)
-        playerWrapper.initialize()
+        playerWrapper.initialize(videoItem.volume)
+        
+        // 恢复播放位置
+        if (videoItem.currentPosition > 0) {
+            playerWrapper.seekTo(videoItem.currentPosition)
+        }
         
         // 自动加载字幕
         if (videoItem.subtitleUri != null) {
